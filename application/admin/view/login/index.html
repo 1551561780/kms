@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <title>KMS-后端管理</title>
+     <!--图标-->
+    <link rel="shortcut icon" href="100.ico">
+    <meta name="keywords" content="">
+    <meta name="description" content=""> 
+    <link href="__H+__/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="__H+__/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link href="__H+__/css/style.min862f.css" rel="stylesheet">
+    <link href="__H+__/css/style.min862f.css" rel="stylesheet">
+    <link href="/public/static/admin/css/login_s1.css" rel="stylesheet"> 	
+    <style type="text/css"> 
+               	/*.doubleshow
+                {
+                  width: 20px;
+                  height: 16px;
+
+                -webkit-animation: doubleshow 3s infinite;
+                -webkit-animation-fill-mode: both; 
+                }
+
+                @-webkit-keyframes doubleshow{
+                  from {opacity: 0;}
+                  to{opacity: 1;} 
+
+                }*/ 
+
+        </style>
+    </style>
+</head>
+<body class="signin"  >
+    
+ <div class="signinpanel">
+    <div class="row">
+        <div class="col-sm-12">
+         <form   id="doLogin" name="doLogin" method="post" action="sign">
+                <h4 class="no-margins">Kms-后台管理系统</h4>
+                <p class="m-t-md" id="err_msg" style="display:none"></p>
+                <input type="text" class="form-control uname" placeholder="用户名" id="username" name="username" data-msg-required="请输入管理员账号">
+                <input type="password" class="form-control pword m-b" placeholder="密码" id="password" name="userpassword"  data-msg-required="请输入登录密码">
+                <div class="form-group code">
+                    {if condition="config('verify_type') eq 0"}
+                          
+                    <input type="text" name="code" id="code" class="form-control" placeholder="请输入验证码" required="" data-msg-required="请输入验证码">
+                     <img src="{:url('verify')}" id="code_img" onclick="javascript:this.src='{:url('verify')}?tm='+Math.random();" style="margin-left:10px;float:left;cursor: pointer;border-radius: 5px;height:45px;line-height:38px"/>  
+                    {else/}  
+                      <p id="wait"> 正在加载验证码...... </p> 
+                    {/if}
+
+                </div>
+                <!--button class="btn btn-success btn-block" type="button" id="loginbtn">登录</button-->
+                <button type="submit" class="btn btn-primary block full-width m-b btn-block"> 登录</button> 
+            
+          </form>
+        </div>
+    </div>
+    <div class="signup-footer">
+        <div class="text-center" style="    color: #eee;">
+            Vens <br>
+           Copyright©2014-2444 Vens Corp. All Rights Reserved 
+        </div>
+    </div>
+</div>
+    <script src="__H+__/js/jquery.min.js?v=2.1.4"></script>
+    <script src="__H+__/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="__Layer__/layer.js"></script>  
+    <script src="/public/static/common/js/cookie.js"></script> 
+
+    <script type="text/javascript"> 
+    	//获取 cookie 值  
+    	var authUid=$.cookie('authUid');   
+    </script>
+    <script>if(window.top !== window.self){ window.top.location = window.location;}</script>
+    <script type="text/javascript">
+    	 //背景图切换 
+    function time(){
+        var i = Math.floor(Math.random()*(1+10)+0); //（获取随机数，设置m~n的随机，此处4是代表n，0处是m，可以替换）
+        if(i==0){ i = 1;} document.body.style.backgroundImage="url(/public/static/common/image/bg-"+i+".jpg)";
+    } 	
+	    
+ document.onkeydown=function(event){
+
+		        var e = event || window.event || arguments.callee.caller.arguments[0];
+		        if(e && e.keyCode==13){ // enter 键 
+		            $('#doLogin').click();
+		        }
+	    	};
+     $(function(){ 
+    		time();
+    		
+
+            $("#doLogin").submit(function(){
+            	layer.alert('测试。。');
+            return false; 
+               $.ajax({
+                    url:"{:url('sign')}", 
+                    type: 'POST',
+                    dataType: 'json',
+                    data:$('#doLogin').serialize(),// 你的formid
+                    async: false,
+                    error: function(data) {
+                        alert("Connection error");
+                    },
+                    success: function (res) {
+                         
+                        if(res.code == 200){
+                        
+                                $.cookie('uid',res.data.adminid,{path:'/'}); 
+                              layer.msg(res.msg,{icon:1,time:1500,shade: 0.1},function(){
+                              
+                               window.location.href = '{:url("admin/index/index")}';
+                              
+                              });
+                                   //token
+                            //layer.msg(res.msg, {icon: 6});
+                            //跳转 
+                         
+                        }else{
+                            layer.msg(res.msg, {icon: 5});
+                            $('#code_img').click();
+                        }
+
+                    }
+                })
+                 return false;
+
+            }) 
+   })
+
+   
+
+    </script>
+
+</body>
+</html>
